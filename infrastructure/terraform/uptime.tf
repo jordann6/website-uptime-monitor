@@ -104,7 +104,7 @@ resource "aws_iam_role_policy" "uptime_lambda_policy" {
 
 resource "aws_lambda_function" "uptime_checker" {
   function_name = "uptime-monitor-checker"
-  runtime       = "python3.11"
+  runtime       = "python3.13"
   handler       = "uptime_checker.lambda_handler"
   role          = aws_iam_role.uptime_lambda_role.arn
   filename      = "${path.module}/../../backend/uptime_checker.zip"
@@ -203,15 +203,17 @@ resource "aws_cloudwatch_dashboard" "uptime" {
         width  = 12
         height = 6
         properties = {
-          title  = "Site Health (1 = up, 0 = down)"
-          view   = "timeSeries"
-          stat   = "Minimum"
-          period = 300
+          title   = "Site Health (1 = up, 0 = down)"
+          view    = "timeSeries"
+          stat    = "Minimum"
+          period  = 300
+          region  = var.aws_region
           metrics = [[
             "UptimeMonitor", "IsHealthy",
             "URL", var.uptime_check_url
           ]]
-          yAxis = { left = { min = 0, max = 1 } }
+          yAxis       = { left = { min = 0, max = 1 } }
+          annotations = { horizontal = [] }
         }
       },
       {
@@ -221,14 +223,16 @@ resource "aws_cloudwatch_dashboard" "uptime" {
         width  = 12
         height = 6
         properties = {
-          title  = "Response Latency (ms)"
-          view   = "timeSeries"
-          stat   = "Average"
-          period = 300
-          metrics = [[
+          title       = "Response Latency (ms)"
+          view        = "timeSeries"
+          stat        = "Average"
+          period      = 300
+          region      = var.aws_region
+          metrics     = [[
             "UptimeMonitor", "LatencyMs",
             "URL", var.uptime_check_url
           ]]
+          annotations = { horizontal = [] }
         }
       },
       {
@@ -238,10 +242,11 @@ resource "aws_cloudwatch_dashboard" "uptime" {
         width  = 12
         height = 6
         properties = {
-          title  = "SSL Days Remaining"
-          view   = "timeSeries"
-          stat   = "Minimum"
-          period = 3600
+          title   = "SSL Days Remaining"
+          view    = "timeSeries"
+          stat    = "Minimum"
+          period  = 3600
+          region  = var.aws_region
           metrics = [[
             "UptimeMonitor", "SSLDaysRemaining",
             "URL", var.uptime_check_url
