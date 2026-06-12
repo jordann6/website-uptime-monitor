@@ -1,5 +1,7 @@
 # Website Uptime Monitor
 
+[![Validate](https://github.com/jordann6/website-uptime-monitor/actions/workflows/validate.yml/badge.svg)](https://github.com/jordann6/website-uptime-monitor/actions/workflows/validate.yml)
+
 Serverless uptime monitoring for [jordandesigns.io](https://jordandesigns.io) using AWS EventBridge, Lambda, DynamoDB, CloudWatch, and SNS.
 
 ## Architecture
